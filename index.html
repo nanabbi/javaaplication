@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusShop | Microservices Cloud Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .mesh-bg {
+      background-color: #0f172a;
+      background-image: 
+        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(280, 84%, 30%, 0.4) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(339, 90%, 45%, 0.3) 0, transparent 50%),
+        radial-gradient(at 0% 100%, hsla(220, 80%, 35%, 0.3) 0, transparent 50%),
+        radial-gradient(at 100% 100%, hsla(160, 84%, 39%, 0.25) 0, transparent 50%);
+    }
+    .neon-glow-cyan {
+      box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.4);
+    }
+    .neon-glow-pink {
+      box-shadow: 0 0 25px -5px rgba(236, 72, 153, 0.4);
+    }
+  </style>
+</head>
+<body class="mesh-bg min-h-screen text-slate-100 flex flex-col selection:bg-pink-500 selection:text-white">
+
+  <!-- Floating Nav Header -->
+  <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-900/60 border-b border-white/10 px-6 py-4 shadow-2xl">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-pink-500 via-purple-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-pink-500/30">
+          <i class="fa-solid fa-bolt text-xl text-white"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-pink-400 via-purple-300 to-cyan-300 bg-clip-text text-transparent">
+            NexusShop Cloud
+          </h1>
+          <p class="text-[11px] text-slate-400 font-medium">Spring Boot 3 • Decoupled Microservices • In-Memory H2</p>
+        </div>
+      </div>
+
+      <!-- Live Service Status Badges -->
+      <div class="flex items-center space-x-3 text-xs font-semibold">
+        <div id="product-service-badge" class="px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-white/10 text-slate-300 flex items-center space-x-2 transition-all">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+          <span>Product-Service (:8081)</span>
+        </div>
+        <div id="order-service-badge" class="px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-white/10 text-slate-300 flex items-center space-x-2 transition-all">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+          <span>Order-Service (:8082)</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Canvas -->
+  <main class="max-w-7xl mx-auto px-6 py-8 flex-1 w-full space-y-8">
+
+    <!-- Hero / Metrics Dashboard Banner -->
+    <div class="relative overflow-hidden rounded-3xl p-8 border border-white/10 bg-gradient-to-r from-indigo-900/60 via-purple-900/40 to-slate-900/60 backdrop-blur-xl shadow-2xl">
+      <div class="absolute -right-10 -top-10 w-64 h-64 bg-pink-500/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-10 -bottom-10 w-64 h-64 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="space-y-2 max-w-2xl">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-pink-500/20 text-pink-300 border border-pink-500/30">
+            <i class="fa-solid fa-sparkles text-pink-400"></i> Active Multi-Service Architecture
+          </span>
+          <h2 class="text-3xl font-black tracking-tight text-white sm:text-4xl">
+            Live Microservices Control Deck
+          </h2>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Inter-service orchestration: when an order is submitted on <span class="text-emerald-400 font-semibold">Port 8082</span>, the Order Service executes a real-time REST request to <span class="text-cyan-400 font-semibold">Port 8081</span> to validate price, check inventory, and atomically deduct stock.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="refreshAll()" class="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold rounded-xl text-sm shadow-lg shadow-cyan-500/30 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+            <i class="fa-solid fa-arrows-rotate"></i> Synchronize Nodes
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Metrics Counters -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-6 border-t border-white/10">
+        <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+          <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Items</div>
+          <div id="metric-items-count" class="text-2xl font-black text-cyan-300 mt-1">0</div>
+        </div>
+        <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+          <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Stock Units</div>
+          <div id="metric-stock-count" class="text-2xl font-black text-pink-300 mt-1">0</div>
+        </div>
+        <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+          <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Orders Dispatched</div>
+          <div id="metric-orders-count" class="text-2xl font-black text-emerald-300 mt-1">0</div>
+        </div>
+        <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+          <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Gross Volume</div>
+          <div id="metric-revenue" class="text-2xl font-black text-amber-300 mt-1">$0.00</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Microservices Two-Column Arena -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+      <!-- Column 1: Product Microservice (Cyan/Blue Theme) -->
+      <section class="rounded-3xl border border-cyan-500/30 bg-slate-900/70 backdrop-blur-xl shadow-2xl overflow-hidden flex flex-col">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-cyan-900/60 via-blue-900/40 to-slate-900/80 px-6 py-5 border-b border-cyan-500/20 flex justify-between items-center">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-400 text-lg">
+              <i class="fa-solid fa-box-open"></i>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-white text-base flex items-center gap-2">
+                Product Catalog Microservice
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-300 border border-cyan-400/30">:8081</span>
+              </h3>
+              <span class="text-xs text-slate-400">Spring Data JPA • H2 In-Memory DB</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="http://localhost:8081/h2-console" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-cyan-300 transition font-semibold flex items-center gap-1.5" title="Open H2 Database Console">
+              <i class="fa-solid fa-database"></i> DB Console
+            </a>
+            <button onclick="seedProducts()" class="text-xs px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold transition flex items-center gap-1 shadow-md shadow-cyan-500/20">
+              <i class="fa-solid fa-plus"></i> Seed 4 Items
+            </button>
+          </div>
+        </div>
+
+        <!-- Add Product Form -->
+        <div class="p-6 border-b border-white/10 bg-slate-800/30">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-cyan-400 mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-circle-plus"></i> Add New Product to Inventory
+          </h4>
+          <form id="productForm" onsubmit="createProduct(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <input type="text" id="prodName" placeholder="Product Title" required class="px-3.5 py-2.5 text-sm bg-slate-900/90 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
+            <input type="number" id="prodPrice" placeholder="Unit Price ($)" step="0.01" min="0" required class="px-3.5 py-2.5 text-sm bg-slate-900/90 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
+            <input type="number" id="prodStock" placeholder="Stock Units" min="0" required class="px-3.5 py-2.5 text-sm bg-slate-900/90 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition">
+            <button type="submit" class="sm:col-span-3 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-floppy-disk"></i> Save to Product Database
+            </button>
+          </form>
+        </div>
+
+        <!-- Product Table -->
+        <div class="p-6 flex-1 overflow-x-auto">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Live Inventory Registry</h4>
+          <div class="rounded-2xl border border-white/5 overflow-hidden">
+            <table class="w-full text-left text-sm text-slate-300">
+              <thead class="bg-slate-800/80 text-xs font-bold uppercase text-slate-400">
+                <tr>
+                  <th class="px-4 py-3">ID</th>
+                  <th class="px-4 py-3">Product</th>
+                  <th class="px-4 py-3">Price</th>
+                  <th class="px-4 py-3">Availability</th>
+                  <th class="px-4 py-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="productTableBody" class="divide-y divide-white/5 bg-slate-900/50">
+                <tr>
+                  <td colspan="5" class="py-8 text-center text-slate-500">Loading catalog...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Column 2: Order Microservice (Emerald/Pink Theme) -->
+      <section class="rounded-3xl border border-pink-500/30 bg-slate-900/70 backdrop-blur-xl shadow-2xl overflow-hidden flex flex-col">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-pink-900/60 via-purple-900/40 to-slate-900/80 px-6 py-5 border-b border-pink-500/20 flex justify-between items-center">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-pink-500/20 border border-pink-400/40 flex items-center justify-center text-pink-400 text-lg">
+              <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-white text-base flex items-center gap-2">
+                Order Processing Microservice
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pink-400/20 text-pink-300 border border-pink-400/30">:8082</span>
+              </h3>
+              <span class="text-xs text-slate-400">Inter-Service REST Orchestration • H2 DB</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <a href="http://localhost:8082/h2-console" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-pink-300 transition font-semibold flex items-center gap-1.5" title="Open H2 Database Console">
+              <i class="fa-solid fa-database"></i> DB Console
+            </a>
+          </div>
+        </div>
+
+        <!-- Place Order Form -->
+        <div class="p-6 border-b border-white/10 bg-slate-800/30">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-pink-400 mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-paper-plane"></i> Dispatch New Customer Order
+          </h4>
+          <form id="orderForm" onsubmit="placeOrder(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <input type="email" id="customerEmail" placeholder="Customer Email" required class="px-3.5 py-2.5 text-sm bg-slate-900/90 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400 transition sm:col-span-3">
+            <select id="orderProductSelect" required class="px-3.5 py-2.5 text-sm bg-slate-900/90 border border-white/10 rounded-xl text-white focus:outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400 transition sm:col-span-2">
+              <option value="">Select Item from Catalog...</option>
+            </select>
+            <input type="number" id="orderQty" placeholder="Qty" min="1" value="1" required class="px-3.5 py-2.5 text-sm bg-slate-900/90 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-pink-400 focus:ring-1 focus:ring-pink-400 transition">
+            <button type="submit" class="sm:col-span-3 py-2.5 bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 hover:from-pink-400 hover:to-amber-400 text-white font-bold text-sm rounded-xl transition shadow-lg shadow-pink-500/25 flex items-center justify-center gap-2">
+              <i class="fa-solid fa-bolt"></i> Place Order (Triggers Inter-Service Stock Reduction)
+            </button>
+          </form>
+          <div id="orderStatusMsg" class="mt-3 p-3 rounded-xl text-xs font-semibold hidden transition"></div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="p-6 flex-1 overflow-x-auto">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Fulfilled Orders Log</h4>
+          <div class="rounded-2xl border border-white/5 overflow-hidden">
+            <table class="w-full text-left text-sm text-slate-300">
+              <thead class="bg-slate-800/80 text-xs font-bold uppercase text-slate-400">
+                <tr>
+                  <th class="px-4 py-3">Order #</th>
+                  <th class="px-4 py-3">Customer</th>
+                  <th class="px-4 py-3">Item ID</th>
+                  <th class="px-4 py-3">Qty</th>
+                  <th class="px-4 py-3">Total</th>
+                  <th class="px-4 py-3 text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody id="orderTableBody" class="divide-y divide-white/5 bg-slate-900/50">
+                <tr>
+                  <td colspan="6" class="py-8 text-center text-slate-500">Loading order records...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-auto border-t border-white/10 bg-slate-950/70 backdrop-blur-md py-6 px-6 text-center text-xs text-slate-500">
+    Full Stack Microservices Architecture • Java 17 + Spring Boot 3 + JPA Hibernate + H2 Database Engine • Live on Ports 8081 & 8082
+  </footer>
+
+  <script>
+    const PRODUCT_API = "http://localhost:8081/api/products";
+    const ORDER_API = "http://localhost:8082/api/orders";
+
+    async function checkHealth() {
+      // Product Microservice Health
+      try {
+        const pRes = await fetch(`${PRODUCT_API}/health`, { signal: AbortSignal.timeout(2000) });
+        if (pRes.ok) {
+          document.getElementById('product-service-badge').innerHTML = 
+            '<span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-md shadow-emerald-400/50"></span><span class="text-emerald-300">Product-Service (Online :8081)</span>';
+          document.getElementById('product-service-badge').className = "px-3.5 py-1.5 rounded-full bg-emerald-950/70 border border-emerald-500/40 text-xs font-bold flex items-center space-x-2";
+        }
+      } catch (e) {
+        document.getElementById('product-service-badge').innerHTML = 
+          '<span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span><span class="text-rose-300">Product-Service (Offline)</span>';
+        document.getElementById('product-service-badge').className = "px-3.5 py-1.5 rounded-full bg-rose-950/70 border border-rose-500/40 text-xs font-bold flex items-center space-x-2";
+      }
+
+      // Order Microservice Health
+      try {
+        const oRes = await fetch(`${ORDER_API}/health`, { signal: AbortSignal.timeout(2000) });
+        if (oRes.ok) {
+          document.getElementById('order-service-badge').innerHTML = 
+            '<span class="w-2.5 h-2.5 rounded-full bg-pink-400 shadow-md shadow-pink-400/50"></span><span class="text-pink-300">Order-Service (Online :8082)</span>';
+          document.getElementById('order-service-badge').className = "px-3.5 py-1.5 rounded-full bg-pink-950/70 border border-pink-500/40 text-xs font-bold flex items-center space-x-2";
+        }
+      } catch (e) {
+        document.getElementById('order-service-badge').innerHTML = 
+          '<span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span><span class="text-rose-300">Order-Service (Offline)</span>';
+        document.getElementById('order-service-badge').className = "px-3.5 py-1.5 rounded-full bg-rose-950/70 border border-rose-500/40 text-xs font-bold flex items-center space-x-2";
+      }
+    }
+
+    async function loadProducts() {
+      const tbody = document.getElementById('productTableBody');
+      const select = document.getElementById('orderProductSelect');
+      try {
+        const res = await fetch(PRODUCT_API);
+        const data = await res.json();
+        
+        tbody.innerHTML = '';
+        select.innerHTML = '<option value="">Select Item from Catalog...</option>';
+
+        let totalStock = 0;
+        document.getElementById('metric-items-count').textContent = data.length;
+
+        if (data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-slate-500">No products yet. Click "+ Seed 4 Items" above!</td></tr>';
+          document.getElementById('metric-stock-count').textContent = 0;
+          return;
+        }
+
+        data.forEach(p => {
+          totalStock += p.stockQuantity;
+          const row = document.createElement('tr');
+          row.className = "hover:bg-slate-800/50 transition border-b border-white/5";
+          row.innerHTML = `
+            <td class="px-4 py-3.5 font-bold text-slate-400 font-mono">#${p.id}</td>
+            <td class="px-4 py-3.5 font-semibold text-white flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+              ${p.name}
+            </td>
+            <td class="px-4 py-3.5 text-cyan-300 font-bold">$${p.price.toFixed(2)}</td>
+            <td class="px-4 py-3.5">
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold ${p.stockQuantity > 0 ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'}">
+                ${p.stockQuantity} in stock
+              </span>
+            </td>
+            <td class="px-4 py-3.5 text-right">
+              <button onclick="deleteProduct(${p.id})" class="text-rose-400 hover:text-rose-300 text-xs font-semibold px-2 py-1 rounded hover:bg-rose-500/10 transition">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </td>
+          `;
+          tbody.appendChild(row);
+
+          const opt = document.createElement('option');
+          opt.value = p.id;
+          opt.textContent = `${p.name} ($${p.price.toFixed(2)}) — ${p.stockQuantity} in stock`;
+          select.appendChild(opt);
+        });
+
+        document.getElementById('metric-stock-count').textContent = totalStock;
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-rose-400">Cannot reach Product Microservice on :8081</td></tr>';
+      }
+    }
+
+    async function loadOrders() {
+      const tbody = document.getElementById('orderTableBody');
+      try {
+        const res = await fetch(ORDER_API);
+        const data = await res.json();
+
+        tbody.innerHTML = '';
+        let revenue = 0;
+        document.getElementById('metric-orders-count').textContent = data.length;
+
+        if (data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-500">No orders logged yet.</td></tr>';
+          document.getElementById('metric-revenue').textContent = '$0.00';
+          return;
+        }
+
+        data.forEach(o => {
+          revenue += (o.totalPrice || 0);
+          const row = document.createElement('tr');
+          row.className = "hover:bg-slate-800/50 transition border-b border-white/5";
+          row.innerHTML = `
+            <td class="px-4 py-3.5 font-bold text-pink-400 font-mono">#${o.id}</td>
+            <td class="px-4 py-3.5 text-slate-200 font-medium">${o.customerEmail}</td>
+            <td class="px-4 py-3.5 text-slate-400 font-mono">Prod #${o.productId}</td>
+            <td class="px-4 py-3.5 font-bold text-white">${o.quantity}</td>
+            <td class="px-4 py-3.5 text-emerald-300 font-bold">$${o.totalPrice ? o.totalPrice.toFixed(2) : '0.00'}</td>
+            <td class="px-4 py-3.5 text-right">
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                <i class="fa-solid fa-circle-check text-[10px] mr-1"></i>${o.status}
+              </span>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+
+        document.getElementById('metric-revenue').textContent = '$' + revenue.toFixed(2);
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-rose-400">Cannot reach Order Microservice on :8082</td></tr>';
+      }
+    }
+
+    async function createProduct(e) {
+      e.preventDefault();
+      const name = document.getElementById('prodName').value;
+      const price = parseFloat(document.getElementById('prodPrice').value);
+      const stockQuantity = parseInt(document.getElementById('prodStock').value);
+
+      try {
+        const res = await fetch(PRODUCT_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, price, stockQuantity })
+        });
+        if (res.ok) {
+          document.getElementById('productForm').reset();
+          refreshAll();
+        }
+      } catch (e) {
+        alert("Failed to connect to Product Microservice");
+      }
+    }
+
+    async function deleteProduct(id) {
+      if (!confirm(`Delete product #${id}?`)) return;
+      await fetch(`${PRODUCT_API}/${id}`, { method: 'DELETE' });
+      refreshAll();
+    }
+
+    async function placeOrder(e) {
+      e.preventDefault();
+      const msg = document.getElementById('orderStatusMsg');
+      const customerEmail = document.getElementById('customerEmail').value;
+      const productId = parseInt(document.getElementById('orderProductSelect').value);
+      const quantity = parseInt(document.getElementById('orderQty').value);
+
+      msg.className = "mt-3 p-3 rounded-xl text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 flex items-center gap-2";
+      msg.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> Processing order: contacting Product Service (:8081)...';
+      msg.classList.remove('hidden');
+
+      try {
+        const res = await fetch(ORDER_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ customerEmail, productId, quantity })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          msg.className = "mt-3 p-3 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-2";
+          msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Order #${data.id} placed successfully! Total: $${data.totalPrice.toFixed(2)}`;
+          document.getElementById('orderForm').reset();
+          refreshAll();
+        } else {
+          msg.className = "mt-3 p-3 rounded-xl text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-2";
+          msg.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Order failed: ${data.message || 'Validation error'}`;
+        }
+      } catch (err) {
+        msg.className = "mt-3 p-3 rounded-xl text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 flex items-center gap-2";
+        msg.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Network Error: Unable to communicate with Order Microservice';
+      }
+    }
+
+    async function seedProducts() {
+      const items = [
+        { name: "Nebula Cyber Gaming Laptop", price: 2199.00, stockQuantity: 12 },
+        { name: "Quantum ANC Wireless Headset", price: 299.99, stockQuantity: 25 },
+        { name: "RGB Mechanical Keyboard (Cherry MX)", price: 149.50, stockQuantity: 45 },
+        { name: "Curved 4K Ultra OLED Monitor 34\"", price: 899.00, stockQuantity: 8 }
+      ];
+      for (const item of items) {
+        await fetch(PRODUCT_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(item)
+        });
+      }
+      refreshAll();
+    }
+
+    function refreshAll() {
+      checkHealth();
+      loadProducts();
+      loadOrders();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      refreshAll();
+      setInterval(checkHealth, 5000);
+    });
+  </script>
+</body>
+</html>
